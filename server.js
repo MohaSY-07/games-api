@@ -17,7 +17,7 @@
     app.listen(3000, () => {
     console.log('Server started on port 3000');
     });
-    // table
+    // ta
     db.run(`
     CREATE TABLE IF NOT EXISTS games (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,4 +50,22 @@ app.post('/api/games', (req, res) => {
             platform
         });
     });
+
 });
+
+app.get('/api/games', (req, res) => {
+
+    db.all('SELECT * FROM games', [], (err, rows) => {
+
+        if (err) {
+            return res.status(500).send(err.message);
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+
+
