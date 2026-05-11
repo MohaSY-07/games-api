@@ -67,5 +67,58 @@ app.get('/api/games', (req, res) => {
 
 });
 
+//Get the game by id
+app.get('/api/games/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    db.get('SELECT * FROM games WHERE id = ?', [id], (err, row) => {
+
+        if (err) {
+            return res.status(500).send(err.message);
+        }
+
+        if (!row) {
+            return res.status(404).send('Game not found');
+        }
+
+        res.json(row);
+
+    });
+//Update the game by id
+app.put('/api/games/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    const { title, genre, platform } = req.body;
+
+    if (!title || !genre || !platform) {
+        return res.status(400).send('Missing fields');
+    }
+
+    const sql = `
+    UPDATE games
+    SET title = ?, genre = ?, platform = ?
+    WHERE id = ?
+    `;
+
+    db.run(sql, [title, genre, platform, id], function(err) {
+
+        if (err) {
+            return res.status(500).send(err.message);
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).send('Game not found');
+        }
+
+        res.send('Game updated');
+
+    });
+
+});
+
+});
+
 
 
